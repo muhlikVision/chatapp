@@ -2,6 +2,8 @@ import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flash_chat/genericWidgets.dart';
+
 
 class WelcomeScreen extends StatefulWidget {
 
@@ -20,7 +22,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     super.initState();
 
     controller = AnimationController(
-        duration: Duration(seconds: 1),
+        duration: Duration(seconds: 3),
         vsync: this);
     
     animation = ColorTween(begin: Colors.blueAccent, end: Colors.white).animate(controller);
@@ -39,19 +41,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
 
     controller.addListener(() {
       setState(() {
-
-
       });
-      print(animation.value);
     });
-  }
+  } //init controller
 
   @override
   void dispose() {
     controller.dispose();
     // TODO: implement dispose
     super.dispose();
-  }
+  } //disposing controller
 
 
   @override
@@ -73,58 +72,29 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                     height: 60.0,
                   ),
                 ),
-                Text(
-                  'WhatsApp',
-                  style: TextStyle(
+                TypewriterAnimatedTextKit(
+                  text: ['WhatsApp'],
+                  textStyle: TextStyle(
                     fontSize: 45.0,
                     fontWeight: FontWeight.w900,
                   ),
+                  speed: const Duration(milliseconds: 500),
                 ),
               ],
             ),
             SizedBox(
               height: 48.0,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                elevation: 5.0,
-                color: Colors.lightBlueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, LoginScreen.id);
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Log In',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                elevation: 5.0,
-                child: MaterialButton(
-                  onPressed: () {
-                    //Go to registration screen.
-                    Navigator.pushNamed(context, RegistrationScreen.id);
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Register',
-                  ),
-                ),
-              ),
-            ),
+            ButtonBuilder(color: Colors.green, text: 'Login', onPress: (){
+              Navigator.pushNamed(context, LoginScreen.id);
+            },),
+            ButtonBuilder(color: Colors.blueAccent, text: 'Register', onPress: (){
+              Navigator.pushNamed(context, RegistrationScreen.id);
+            },),
           ],
         ),
       ),
     );
   }
 }
+
