@@ -1,6 +1,7 @@
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class WelcomeScreen extends StatefulWidget {
 
@@ -12,28 +13,51 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin{
 
   AnimationController controller;
+  Animation animation;
 
   @override
   void initState() {
     super.initState();
 
     controller = AnimationController(
-        duration: Duration(seconds: 10),
-        vsync: this,);
-
+        duration: Duration(seconds: 1),
+        vsync: this);
+    
+    animation = ColorTween(begin: Colors.blueAccent, end: Colors.white).animate(controller);
+    
     controller.forward();
+    
+    // animation.addStatusListener((status) {
+    //   print(status);
+    //   if(status == AnimationStatus.completed)
+    //     {
+    //       controller.reverse(from: 1);
+    //     }
+    //   else if (status == AnimationStatus.dismissed)
+    //     controller.forward();
+    // });
+
     controller.addListener(() {
       setState(() {
 
+
       });
-      print(controller.value);
+      print(animation.value);
     });
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightGreenAccent.withOpacity(controller.value),
+      backgroundColor: animation.value,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -50,7 +74,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                   ),
                 ),
                 Text(
-                  '${controller.value}',
+                  'WhatsApp',
                   style: TextStyle(
                     fontSize: 45.0,
                     fontWeight: FontWeight.w900,
