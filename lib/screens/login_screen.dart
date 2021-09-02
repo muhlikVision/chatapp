@@ -29,11 +29,15 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 48.0,
             ),
-            InputField(bcolor: Colors.lightBlueAccent, text: 'Enter Email'),
+            InputField(onChange: (value){
+              //email = value;
+            } ,bcolor: Colors.blueAccent, text: 'Enter Email', type: TextInputType.emailAddress,),
             SizedBox(
               height: 8.0,
             ),
-            InputField(bcolor: Colors.lightBlueAccent, text: 'Enter Password'),
+            InputField(onChange: (value){
+              //password = value;
+            } , bcolor: Colors.blueAccent, text: 'Enter Password', chk: true),
             SizedBox(
               height: 24.0,
             ),

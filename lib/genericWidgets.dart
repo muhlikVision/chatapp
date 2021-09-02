@@ -33,14 +33,36 @@ class ButtonBuilder extends StatelessWidget {
 
 class InputField extends StatelessWidget {
 
-  InputField({this.onChange, this.text, this.bcolor});
+  InputField({this.onChange, this.text, this.bcolor, this.chk, this.type});
   final Function onChange;
   final String text;
   final Color bcolor;
+  final bool chk;
+  final TextInputType type;
+
+
+  bool checkNull(bool chk){
+    if(chk == null)
+     return false;
+    else
+      return true;
+  }
+  TextInputType checkText(TextInputType text)
+  {
+    if(text == null)
+      return TextInputType.text;
+    else
+      return type;
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    //
     return TextField(
+      keyboardType: checkText(type),
+      obscureText: checkNull(chk),
+      textAlign: TextAlign.center, style: TextStyle(color: Colors.yellowAccent),
       onChanged: onChange,
       decoration: InputDecoration(
         hintText: text,
