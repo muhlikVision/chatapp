@@ -24,6 +24,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       backgroundColor: Colors.black,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
+        color: Colors.yellow,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
