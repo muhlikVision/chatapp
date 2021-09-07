@@ -1,15 +1,19 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/painting.dart';
 
 final _firestore = FirebaseFirestore.instance; //send and get data
 
 class MsgBubble extends StatelessWidget {
-  final String msgText, msgSender;
-  MsgBubble(this.msgText, this.msgSender);
+  final String msgText, msgSender, msgTime;
+
+  MsgBubble(this.msgText, this.msgSender, this.msgTime);
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +24,15 @@ class MsgBubble extends StatelessWidget {
         children: <Widget>[
           Text(
             '$msgSender',
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 25, color: Colors.blue, fontWeight: FontWeight.w900),
           ),
           SizedBox(
-            height: 10,
+            height: 8,
           ),
           Material(
             elevation: 5,
             borderRadius: BorderRadiusDirectional.only(
-                topEnd: Radius.circular(20),
+                bottomEnd: Radius.circular(20),
                 topStart: Radius.circular(20),
                 bottomStart: Radius.circular(20)),
             color: Colors.limeAccent,
@@ -40,7 +44,13 @@ class MsgBubble extends StatelessWidget {
               ),
             ),
           ),
-
+          SizedBox(
+            height: 8,
+          ),
+          Text(
+            '$msgTime',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -68,8 +78,9 @@ class MessageStream extends StatelessWidget {
             var data = i.data() as Map<String, dynamic>;
             final msgText = data['texts'];
             final msgSender = data['sender'];
+            final msgTime = data['timeAt'];
             //print('$msgText from $msgSender');
-            final msgBox = MsgBubble(msgText, msgSender);
+            final msgBox = MsgBubble(msgText, msgSender, msgTime);
             messageBox.add(msgBox);
             //print(messageBox);
           }

@@ -23,6 +23,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   User loggedinUser;
   String messageText;
+  String messageTime;
 
   @override
   void initState() {
