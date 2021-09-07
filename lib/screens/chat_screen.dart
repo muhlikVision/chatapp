@@ -1,10 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flash_chat/genericWidgets.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:time_machine/time_machine.dart';
 import '../constants.dart';
+import 'package:flutter/services.dart';
 
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
@@ -13,9 +16,10 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final _auth = FirebaseAuth.instance; //auth data
+  final _firestore = FirebaseFirestore.instance; //send and get data
+  final msgTextCont = TextEditingController();
 
-  final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
 
   User loggedinUser;
   String messageText;
@@ -26,7 +30,16 @@ class _ChatScreenState extends State<ChatScreen> {
     getCurrentUser();
     //getMessages();
     getMessageStream();
+    getTime();
   }
+
+
+  String getTime ()
+  {
+    String now = DateTime.now().toString();
+    return now;
+  }
+
   void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
@@ -34,8 +47,7 @@ class _ChatScreenState extends State<ChatScreen> {
         loggedinUser = user;
       }
       print(loggedinUser.email);
-    }
-    catch(e){
+    } catch (e) {
       print(e);
     }
   }
@@ -47,16 +59,14 @@ class _ChatScreenState extends State<ChatScreen> {
   // }
 
   void getMessageStream() async {
-    await for(var snapshot in _firestore.collection('messages').snapshots()) {
-      for (var msg in snapshot.docs) {
-        print(msg.data());
-      }
+    await for (var snapshot in _firestore.collection('messages').snapshots()) {
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white70,
       appBar: AppBar(
         leading: null,
         actions: <Widget>[
@@ -76,6 +86,7 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            MessageStream(),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -83,6 +94,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      controller: msgTextCont,
+                      style: TextStyle(color: Colors.black, fontSize: 30),
+                      cursorColor: Colors.black,
                       onChanged: (value) {
                         messageText = value;
                       },
@@ -94,7 +108,9 @@ class _ChatScreenState extends State<ChatScreen> {
                       _firestore.collection('messages').add({
                         'texts': messageText,
                         'sender': loggedinUser.email,
+                        'timeAt': getTime(),
                       });
+                      msgTextCont.clear();
                     },
                     child: Text(
                       'Send',
@@ -110,4 +126,3 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-
