@@ -22,7 +22,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     super.initState();
 
     controller = AnimationController(
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 5),
         vsync: this);
     
     animation = ColorTween(begin: Colors.blueAccent, end: Colors.white).animate(controller);

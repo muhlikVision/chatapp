@@ -9,6 +9,9 @@ import 'package:time_machine/time_machine.dart';
 import '../constants.dart';
 import 'package:flutter/services.dart';
 
+//global
+User loggedinUser;
+
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
   @override
@@ -20,8 +23,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final _firestore = FirebaseFirestore.instance; //send and get data
   final msgTextCont = TextEditingController();
 
-
-  User loggedinUser;
   String messageText;
   String messageTime;
 
@@ -30,7 +31,6 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     getCurrentUser();
     //getMessages();
-    getMessageStream();
     getTime();
   }
 
@@ -59,28 +59,22 @@ class _ChatScreenState extends State<ChatScreen> {
   //   }
   // }
 
-  void getMessageStream() async {
-    await for (var snapshot in _firestore.collection('messages').snapshots()) {
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white70,
       appBar: AppBar(
         leading: null,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.close),
+              icon: Icon(Icons.close, color: Colors.red,),
               onPressed: () {
                 _auth.signOut();
                 Navigator.pop(context);
                 //Navigator.pushNamed(context, LoginScreen.id);
               }),
         ],
-        title: Text('⚡️Chat'),
-        backgroundColor: Colors.lightBlueAccent,
+        title: Text('⚡️Chat', style: TextStyle(color: Colors.white),),
       ),
       body: SafeArea(
         child: Column(
@@ -96,8 +90,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   Expanded(
                     child: TextField(
                       controller: msgTextCont,
-                      style: TextStyle(color: Colors.black, fontSize: 30),
-                      cursorColor: Colors.black,
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      cursorColor: Colors.lightGreenAccent,
                       onChanged: (value) {
                         messageText = value;
                       },

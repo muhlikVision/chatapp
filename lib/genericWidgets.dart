@@ -1,6 +1,8 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,19 +14,60 @@ final _firestore = FirebaseFirestore.instance; //send and get data
 
 class MsgBubble extends StatelessWidget {
   final String msgText, msgSender, msgTime;
+  final bool isMe;
 
-  MsgBubble(this.msgText, this.msgSender, this.msgTime);
+  MsgBubble(this.msgText, this.msgSender, this.msgTime, this.isMe);
 
   @override
   Widget build(BuildContext context) {
+    if(isMe == false){
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              '$msgSender',
+              style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w900),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Material(
+              elevation: 5,
+              borderRadius: BorderRadiusDirectional.only(
+                  bottomEnd: Radius.circular(20),
+                  bottomStart: Radius.circular(20),
+                  topEnd: Radius.circular(20)),
+              color: Colors.lightBlueAccent,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  ' $msgText ',
+                  style: TextStyle(color: Colors.black, fontSize: 18),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Text(
+              '$msgTime',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.lightGreenAccent),
+            ),
+          ],
+        ),
+      );
+    }
+    else
     return Padding(
-      padding: const EdgeInsets.all(18.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           Text(
             '$msgSender',
-            style: TextStyle(fontSize: 25, color: Colors.blue, fontWeight: FontWeight.w900),
+            style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w900),
           ),
           SizedBox(
             height: 8,
@@ -40,7 +83,7 @@ class MsgBubble extends StatelessWidget {
               padding: const EdgeInsets.all(10.0),
               child: Text(
                 ' $msgText ',
-                style: TextStyle(color: Colors.black, fontSize: 30),
+                style: TextStyle(color: Colors.black, fontSize: 18),
               ),
             ),
           ),
@@ -49,7 +92,7 @@ class MsgBubble extends StatelessWidget {
           ),
           Text(
             '$msgTime',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.lightGreenAccent),
           ),
         ],
       ),
@@ -71,7 +114,7 @@ class MessageStream extends StatelessWidget {
             ),
           );
         }
-        final msgs = snapshot.data.docs;
+        final msgs = snapshot.data.docs.reversed;
 
         for (var i in msgs) {
           if (i.data() != null) {
@@ -79,14 +122,17 @@ class MessageStream extends StatelessWidget {
             final msgText = data['texts'];
             final msgSender = data['sender'];
             final msgTime = data['timeAt'];
-            //print('$msgText from $msgSender');
-            final msgBox = MsgBubble(msgText, msgSender, msgTime);
+
+            final currentUser = loggedinUser.email; //checking if sender is the logged in user to manipulate bubble
+
+            final msgBox = MsgBubble(msgText, msgSender, msgTime, currentUser == msgSender);
             messageBox.add(msgBox);
             //print(messageBox);
           }
         }
         return Expanded(
           child: ListView(
+            reverse: true,
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             children: messageBox,
           ),
