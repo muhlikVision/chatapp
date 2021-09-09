@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:time_machine/time_machine.dart';
 import '../constants.dart';
 import 'package:flutter/services.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 //global
 User loggedinUser;
@@ -32,6 +33,7 @@ class _ChatScreenState extends State<ChatScreen> {
     getCurrentUser();
     //getMessages();
     getTime();
+
   }
 
 
@@ -52,13 +54,6 @@ class _ChatScreenState extends State<ChatScreen> {
       print(e);
     }
   }
-  // void getMessages() async {
-  //   final messages = await _firestore.collection('messages').get();
-  //   for(var msg in messages.docs){
-  //    print(msg.data());
-  //   }
-  // }
-
 
   @override
   Widget build(BuildContext context) {
