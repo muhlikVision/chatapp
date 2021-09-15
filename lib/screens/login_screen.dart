@@ -1,19 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/genericWidgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'chat_screen.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flash_chat/constants.dart';
 //MAIN
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
 
-  Future<String> getToken()async{
-    return await _LoginScreenState().getToken();
-  }
+  // Future<String> getToken()async{
+  //   return await _LoginScreenState().getToken();
+  // }
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -30,18 +31,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final msgTextCont = TextEditingController();
 
-  //functions
-  Future<void> storeTokenAndData(UserCredential userCredential)async{
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fToast = FToast();
+    fToast.init(context);
+  }
 
-    await storage.write(key: 'token', value: userCredential.credential.token.toString());
-    await storage.write(key: 'userCred', value: userCredential.toString());
-  }
-  Future<String> getToken()async{
-    String a = await storage.read(key: 'token');
-    print('IN FUNC\n\n');
-    print(a);
-    return a;
-  }
+  //functions
+  // Future<void> storeTokenAndData(UserCredential userCredential)async{
+  //
+  //   await storage.write(key: 'token', value: userCredential.credential.token.toString());
+  //   await storage.write(key: 'userCred', value: userCredential.toString());
+  // }
+  // Future<String> getToken()async{
+  //   String a = await storage.read(key: 'token');
+  //   print('IN FUNC\n\n');
+  //   print(a);
+  //   return a;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +90,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 24.0,
               ),
               ButtonBuilder(onPress: () async{
-                print('$email, $password');
                 setState(() {
                   showSpinner = true;
                 });
@@ -89,7 +97,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   final user = await _auth.signInWithEmailAndPassword(
                       email: email, password: password);
                   if(user != null){
-                    storeTokenAndData(user);
+                    //storeTokenAndData(user);
+                    SharedPreferences pref = await SharedPreferences.getInstance();
+                    pref.setString('email', email);
+                    showToast('LOGGED IN');
                     Navigator.pushNamed(context, ChatScreen.id);
                   }
                 }

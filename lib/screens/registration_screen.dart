@@ -1,9 +1,11 @@
 import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/genericWidgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flash_chat/constants.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'reg_screen';
@@ -17,6 +19,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String email;
   String password;
   bool showSpinner = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fToast = FToast();
+    fToast.init(context);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -75,13 +86,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       final newUser = await _auth.createUserWithEmailAndPassword(
                           email: email, password: password);
                       if(newUser != null){
-                        Navigator.popAndPushNamed(context, ChatScreen.id);
+                        showToast('REGISTERED SUCCESSFULLY, NOW LOGIN');
+                        Navigator.popAndPushNamed(context, LoginScreen.id);
                       }
                     } catch (e) {
                       print(e);
                     }
                     setState(() {
                       showSpinner = false;
+
                     });
                   },
                   color: Colors.blueAccent,

@@ -1,10 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flash_chat/genericWidgets.dart';
 import 'package:flash_chat/screens/login_screen.dart';
+import 'package:flash_chat/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:time_machine/time_machine.dart';
 import '../constants.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +15,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 
 //global
 User loggedinUser;
+
 
 class ChatScreen extends StatefulWidget {
   static const String id = 'chat_screen';
@@ -27,13 +31,16 @@ class _ChatScreenState extends State<ChatScreen> {
   String messageText;
   String messageTime;
 
+
+
   @override
   void initState() {
     super.initState();
     getCurrentUser();
     //getMessages();
     getTime();
-
+    fToast = FToast();
+    fToast.init(context);
   }
 
 
@@ -61,11 +68,15 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         leading: null,
         actions: <Widget>[
+          Center(child: Text('LOG THE FUCK OUT ->', style: TextStyle(fontSize: 20),)),
           IconButton(
               icon: Icon(Icons.close, color: Colors.red,),
-              onPressed: () {
+              onPressed: () async {
+                SharedPreferences pref = await SharedPreferences.getInstance();
+                pref.remove('email');
+                showToast('LOGGED OUT');
                 _auth.signOut();
-                Navigator.pop(context);
+                Navigator.popAndPushNamed(context, WelcomeScreen.id);
                 //Navigator.pushNamed(context, LoginScreen.id);
               }),
         ],
